@@ -14,6 +14,7 @@ class TTS:
     def __init__(self):
         self.models = {}
         self.speakers = {}
+        self.model_by_speaker = {}
 
         for model_path in Path("models").glob("*.pt"):
             self._load_model(model_path)
@@ -21,7 +22,7 @@ class TTS:
     def generate(self, text, speaker, sample_rate):
         assert text != "random"
 
-        model = self._search_model(speaker)
+        model = self.model_by_speaker.get(speaker)
         assert model is not None, f"speaker {speaker} not found"
 
         return self._generate_audio(model, text, speaker, sample_rate)
@@ -39,12 +40,10 @@ class TTS:
     def _load_speakers(self, model, language):
         if "random" in model.speakers:
             model.speakers.remove("random")
-        self.speakers.update({language: model.speakers})
 
-    def _search_model(self, speaker: str):
-        for model in self.models.values():
-            if speaker in model.speakers:
-                return model
+        self.speakers.update({language: model.speakers})
+        for speaker in model.speakers:
+            self.model_by_speaker[speaker] = model
 
     def _generate_audio(self, model, text, speaker, sample_rate):
         audio = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)

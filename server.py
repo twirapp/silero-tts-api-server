@@ -52,7 +52,7 @@ def generate(
 
 @app.get("/speakers")
 def speakers():
-    return tts.get_speakers()
+    return tts.speakers
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ device = torch.device("cpu")
 class TTS:
     def __init__(self):
         self.models = {}
+        self.speakers = {}
 
         for model_path in Path("models").glob("*.pt"):
             self._load_model(model_path)
@@ -25,15 +26,6 @@ class TTS:
 
         return self._generate_audio(model, text, speaker, sample_rate)
 
-    def get_speakers(self):
-        def generator():
-            for language, model in self.models.items():
-                if "random" in model.speakers:
-                    model.speakers.remove("random")
-                yield language, model.speakers
-
-        return {language: speakers for language, speakers in generator()}
-
     def _load_model(self, model_path: Path):
         package = torch.package.PackageImporter(model_path)
         model = package.load_pickle("tts_models", "model")
@@ -41,6 +33,13 @@ class TTS:
         
         language = model_path.stem[3:]
         self.models.update({language: model})
+
+        self._load_speakers(model, language)
+
+    def _load_speakers(self, model, language):
+        if "random" in model.speakers:
+            model.speakers.remove("random")
+        self.speakers.update({language: model.speakers})
 
     def _search_model(self, speaker: str):
         for model in self.models.values():

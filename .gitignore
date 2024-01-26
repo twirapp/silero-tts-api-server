@@ -1,6 +1,7 @@
 .*
 !.gitignore
 !.github
+!.dockerignore
 
 __pycache__
 venv

@@ -27,5 +27,6 @@ SampleRateExamples = Query(
         "8 000": {"value": 8_000},
         "24 000": {"value": 24_000},
         "48 000": {"value": 48_000},
-    }
+    },
+    description="Sample rate in Hz",
 )

@@ -2,6 +2,7 @@
 !.gitignore
 !.github
 !*.example
+!.dockerignore
 
 __pycache__
 venv

@@ -3,8 +3,9 @@ from pathlib import Path
 
 import torch
 from torch.package import PackageImporter
-from io import BytesIO
 
+from io import BytesIO
+from exceptions import NotFoundModelException, NotCorrectTextException
 
 if TYPE_CHECKING:
     from .typing.package import TTSModelMultiAcc_v3
@@ -28,10 +29,9 @@ class TTS:
             self._load_model(model_path)
 
     def generate(self, text: str, speaker: str, sample_rate: int) -> bytes:
-        assert text != "random"
-
         model = self.model_by_speaker.get(speaker)
-        assert model is not None, f"speaker {speaker} not found"
+        if model is None:
+            raise NotFoundModelException(speaker)
 
         return self._generate_audio(model, text, speaker, sample_rate)
 
@@ -56,7 +56,10 @@ class TTS:
     def _generate_audio(
         self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int
     ) -> bytes:
-        audio = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
+        try:
+            audio = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
+        except ValueError:
+            raise NotCorrectTextException(text)
 
         buffer = BytesIO()
         model.write_wave(

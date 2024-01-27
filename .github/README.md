@@ -1,3 +1,4 @@
+<!-- Created in https://leviarista.github.io/github-profile-header-generator/ -->
 ![Header](./header.png)
 
 ## Languages supported
@@ -30,7 +31,7 @@ All languages support sample rate: 8 000, 24 000, 48 000
     ```bash
     git clone https://github.com/gigachad-dev/silero-tts-api-server.git && cd silero-tts-api-server
     ```
-2. Create virtual environment and activate it
+2. (Recommended) Create virtual environment and activate it
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
     ```
@@ -45,3 +46,13 @@ python3 server.py
 ```
 > [!NOTE]
 >  The default will be [localhost:8000](http://localhost:8000/docs). All endpoints can be viewed and tested at [localhost:8000/docs](http://localhost:8000/docs)
+
+# Run http server via docker
+Build docker image
+```bash
+docker build --rm -f "docker/Dockerfile" -t silero-tts-api-server .
+```
+Run docker image
+```bash
+docker run --rm -p 8000:8000 silero-tts-api-server
+```

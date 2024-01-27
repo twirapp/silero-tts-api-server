@@ -1,6 +1,7 @@
 .*
 !.gitignore
 !.github
+!*.example
 !.dockerignore
 
 __pycache__

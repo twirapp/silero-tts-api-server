@@ -35,5 +35,10 @@ def speakers():
 
 if __name__ == "__main__":
     import uvicorn
+    import sentry_sdk
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    sentry_sdk.init()
 
     uvicorn.run(app, host="localhost", port=8000)

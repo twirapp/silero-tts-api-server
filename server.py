@@ -33,12 +33,18 @@ def speakers():
     return tts.speakers
 
 
-if __name__ == "__main__":
-    import uvicorn
+def sentry_init():
     import sentry_sdk
     from dotenv import load_dotenv
 
     load_dotenv()
     sentry_sdk.init()
 
+
+if __name__ == "__main__":
+    import uvicorn
+
+    sentry_init()
     uvicorn.run(app, host="localhost", port=8000)
+else:
+    sentry_init()

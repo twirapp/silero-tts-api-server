@@ -17,7 +17,10 @@ def generate(
     sample_rate: Annotated[int, SampleRateExamples] = 48_000,
 ):
     if sample_rate not in (8_000, 24_000, 48_000):
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Invalid sample rate: {sample_rate}. Use 8 000, 24 000 or 48 000")
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid sample rate: {sample_rate}. Use 8 000, 24 000 or 48 000",
+        )
     try:
         audio = tts.generate(text, speaker, sample_rate)
     except NotFoundModelException as error:
@@ -31,20 +34,3 @@ def generate(
 @app.get("/speakers")
 def speakers():
     return tts.speakers
-
-
-def sentry_init():
-    import sentry_sdk
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    sentry_sdk.init()
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    sentry_init()
-    uvicorn.run(app, host="localhost", port=8000)
-else:
-    sentry_init()

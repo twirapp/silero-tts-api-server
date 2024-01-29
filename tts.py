@@ -15,7 +15,8 @@ if TYPE_CHECKING:
 # https://github.com/snakers4/silero-models/discussions/104
 torch.backends.quantized.engine = "qnnpack"
 
-torch.set_num_threads(4)
+print(f"Using {torch.get_num_threads()} threads. To change, set environment variable MKL_NUM_THREADS")
+
 device = torch.device("cpu")
 
 

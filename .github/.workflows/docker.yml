@@ -1,0 +1,21 @@
+name: Build and push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  postgres-backup:
+    runs-on: self-hosted
+    steps:
+      - uses: TooMuch4U/actions-clean@v2.1
+      - uses: actions/checkout@v3
+      - run: |
+          docker build -f ./Dockerfile \
+          -t satont/twir-silero-tts-api-server:latest \
+          --cache-from type=gha,scope=twir-silero-tts-api-server \
+          --cache-to type=gha,mode=max,scope=twir-silero-tts-api-server .
+
+          docker push satont/twir-silero-tts-api-server:latest

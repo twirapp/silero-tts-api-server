@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           docker build -f ./docker/Dockerfile \
-          -t satont/twir-silero-tts-api-server:latest \
+          -t twirapp/silero-tts-api-server:latest \
           --cache-from type=gha,scope=twir-silero-tts-api-server \
           --cache-to type=gha,mode=max,scope=twir-silero-tts-api-server .
 
-          docker push satont/twir-silero-tts-api-server:latest
+          docker push twirapp/silero-tts-api-server:latest

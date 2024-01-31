@@ -48,11 +48,8 @@ python3 server.py
 >  The default will be [localhost:8000](http://localhost:8000/docs). All endpoints can be viewed and tested at [localhost:8000/docs](http://localhost:8000/docs)
 
 # Run http server via docker
-Build docker image
-```bash
-docker build --rm -f "docker/Dockerfile" -t silero-tts-api-server .
-```
+
 Run docker image
 ```bash
-docker run --rm -p 8000:8000 silero-tts-api-server
+docker run --rm -p 8000:8000 twirapp/silero-tts-api-server
 ```

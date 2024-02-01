@@ -39,6 +39,10 @@ All languages support sample rate: 8 000, 24 000, 48 000
     ```bash
     pip3 install -r requirements.txt
     ```
+4. Download silero tts models
+    ```bash
+    bash ./install_models.sh
+    ```
 
 # Run API server
 ```bash

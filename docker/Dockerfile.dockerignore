@@ -1,3 +1,5 @@
-Dockerfile
 .*
+docker/
+
 __pycache__
+venv

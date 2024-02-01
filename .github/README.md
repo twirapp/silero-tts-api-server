@@ -40,19 +40,34 @@ All languages support sample rate: 8 000, 24 000, 48 000
     pip3 install -r requirements.txt
     ```
 
-# Run http server
+# Run API server
 ```bash
 python3 server.py
 ```
 > [!NOTE]
 >  The default will be [localhost:8000](http://localhost:8000/docs). All endpoints can be viewed and tested at [localhost:8000/docs](http://localhost:8000/docs)
 
-# Run http server via docker
-Build docker image
+# Run API server via docker
 ```bash
-docker build --rm -f "docker/Dockerfile" -t silero-tts-api-server .
+docker run --rm -p 8000:8000 twirapp/silero-tts-api-server
 ```
-Run docker image
+
+<details>
+<summary>Advanced</summary>
+
+Build the API server image:
+```bash
+docker build --rm -f docker/Dockerfile -t silero-tts-api-server .
+```
+
+Run the API server container:
 ```bash
 docker run --rm -p 8000:8000 silero-tts-api-server
 ```
+
+Run the Docker Compose to start the server:
+```bash
+docker-compose -f docker/docker-compose.yml up
+```
+
+</details>

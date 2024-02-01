@@ -1,7 +1,8 @@
 /models/*
 
 .*
-!.github/**
+!.gitignore
+!.github/
 !*.example
 !.dockerignore
 !.gitkeep

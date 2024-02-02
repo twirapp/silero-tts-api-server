@@ -25,6 +25,7 @@ download_model() {
     echo "Completed download: $(basename "$modelUrl")"
   else
     echo "Failed download: $(basename "$modelUrl")"
+    exit 1
   fi
 }
 

@@ -71,7 +71,7 @@ docker run --rm -p 8000:8000 silero-tts-api-server
 
 Run the Docker Compose to start the server:
 ```bash
-docker-compose -f docker/docker-compose.yml up
+docker-compose -f docker/compose.yml up
 ```
 
 </details>

@@ -5,3 +5,7 @@ class NotFoundModelException(Exception):
 class NotCorrectTextException(Exception):
     def __init__(self, text: str):
         super().__init__(f"Text not correct: {text}")
+
+class TextTooLongException(Exception):
+    def __init__(self, text: str):
+        super().__init__(f"Text too long. Length is {len(text)}. Max length is 930 symbols.")

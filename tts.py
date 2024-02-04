@@ -5,7 +5,7 @@ import torch
 from torch.package import PackageImporter
 
 from io import BytesIO
-from exceptions import NotFoundModelException, NotCorrectTextException
+from exceptions import NotFoundModelException, NotCorrectTextException, TextTooLongException
 
 if TYPE_CHECKING:
     from .typing.package import TTSModelMultiAcc_v3
@@ -61,6 +61,10 @@ class TTS:
             audio: torch.Tensor = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:
             raise NotCorrectTextException(text)
+        except Exception as error:
+            if str(error) == "Model couldn't generate your text, probably it's too long":
+                raise TextTooLongException(text)
+            raise
         else:
             return self._convert_to_wav(model, audio, sample_rate)
 

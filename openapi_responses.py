@@ -33,5 +33,16 @@ GENERATE_RESPONSES = {
         },
         "description": "Text not correct",
     },
+    413: {
+        "content": {
+            "application/json": {
+                "example": {
+                    "status_code": 413,
+                    "detail": "Text too long. Length is {len(text)}. Max length is 930 symbols.",
+                }
+            }
+        },
+        "description": "Text too long",
+    },
 }
 

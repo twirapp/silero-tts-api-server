@@ -5,7 +5,7 @@ from fastapi import FastAPI, Response, HTTPException, status
 from tts import tts
 from openapi_examples import TextExamples, SpeakerExamples, SampleRateExamples
 from openapi_responses import GENERATE_RESPONSES
-from exceptions import NotFoundModelException, NotCorrectTextException
+from exceptions import NotFoundModelException, NotCorrectTextException, TextTooLongException
 
 app = FastAPI()
 
@@ -27,6 +27,8 @@ def generate(
         return HTTPException(status.HTTP_404_NOT_FOUND, detail=str(error))
     except NotCorrectTextException as error:
         return HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(error))
+    except TextTooLongException as error:
+        return HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail=str(error))
     else:
         return Response(audio, media_type="audio/wav")
 

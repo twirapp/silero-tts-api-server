@@ -58,19 +58,20 @@ class TTS:
         self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int
     ) -> bytes:
         try:
-            audio = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
+            audio: torch.Tensor = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:
             raise NotCorrectTextException(text)
+        else:
+            return self._convert_to_wav(model, audio, sample_rate)
 
-        buffer = BytesIO()
-        model.write_wave(
-            buffer,
-            audio=(audio * 32767).numpy().astype("int16"),
-            sample_rate=sample_rate,
-        )
-        buffer.seek(0)
-
-        return buffer.read()
-
+    def _convert_to_wav(self, model: "TTSModelMultiAcc_v3", audio: torch.Tensor, sample_rate: int) -> bytes:
+        with BytesIO() as buffer:
+            model.write_wave(
+                buffer,
+                audio=(audio * 32767).numpy().astype("int16"),
+                sample_rate=sample_rate,
+            )
+            buffer.seek(0)
+            return buffer.read()
 
 tts = TTS()

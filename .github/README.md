@@ -75,3 +75,10 @@ docker-compose -f docker/compose.yml up
 ```
 
 </details>
+
+# Considerations for the future
+This repository is dedicated to twir.app and is designed to meet its requirements.
+
+TwirApp needs to generate audio using the CPU. If support for other devices such as cuda or mps is needed, please [open an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20for%20%60cuba%60%20and%20%60mps%60%20devices).
+
+As of now, there are no immediate plans to update the project to Python 3.12 or higher. However, feel free to [create an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20python%203.12%20and%20higher), and I will reconsider this decision.

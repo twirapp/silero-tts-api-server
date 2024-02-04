@@ -37,7 +37,6 @@ GENERATE_RESPONSES = {
         "content": {
             "application/json": {
                 "example": {
-                    "status_code": 413,
                     "detail": "Text too long. Length is {len(text)}. Max length is 930 symbols.",
                 }
             }

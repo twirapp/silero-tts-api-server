@@ -46,7 +46,7 @@ All languages support sample rate: 8 000, 24 000, 48 000
 
 # Run API server
 ```bash
-python3 server.py
+python3 main.py
 ```
 > [!NOTE]
 >  The default will be [localhost:8000](http://localhost:8000/docs). All endpoints can be viewed and tested at [localhost:8000/docs](http://localhost:8000/docs)

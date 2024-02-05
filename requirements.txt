@@ -5,5 +5,4 @@ uvicorn==0.25.0
 torch==2.2.0
 numpy==1.26.3
 
-sentry_sdk==1.39.2
 python-dotenv==1.0.1

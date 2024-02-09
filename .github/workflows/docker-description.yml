@@ -19,6 +19,6 @@ jobs:
         username: ${{ secrets.DOCKER_REGISTRY_LOGIN }}
         password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
         repository: twirapp/silero-tts-api-server
-        short-description: ${{ github.event.repository.description }}
+        short-description: test
         readme-filepath: .github/docker.README.md
         enable-url-completion: true

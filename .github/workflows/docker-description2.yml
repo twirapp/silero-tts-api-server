@@ -10,7 +10,7 @@ jobs:
       - name: push README to Dockerhub
         uses: christian-korneck/update-container-description-action@v1
         env:
-          DOCKER_USER: TwirApp
+          DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_LOGIN }}
           DOCKER_PASS: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
         with:
           destination_container_repo: twirapp/silero-tts-api-server

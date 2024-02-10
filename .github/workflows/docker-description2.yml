@@ -1,0 +1,19 @@
+name: Push README to Docker Hub
+on: push
+jobs:
+  PushContainerReadme:
+    runs-on: ubuntu-latest
+    name: Push README to Docker Hub
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v2
+      - name: push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: TwirApp
+          DOCKER_PASS: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+        with:
+          destination_container_repo: twirapp/silero-tts-api-server
+          provider: dockerhub
+          short_description: 'my short description 😊'
+          readme_file: '.github/README.md'

@@ -21,3 +21,4 @@ jobs:
         repository: twirapp/silero-tts-api-server
         short-description: ${{ github.event.repository.description }}
         readme-filepath: .github/README.md
+        enable-url-completion: true

@@ -6,7 +6,7 @@ on:
       - add-dockerhub-description
     paths:
       - docker/README.md
-      - .github/workflows/docker-description.yml
+      - .github/workflows/dockerhub-description.yml
 jobs:
   docker-description:
     runs-on: ubuntu-latest

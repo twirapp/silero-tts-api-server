@@ -43,3 +43,27 @@ services:
 
 - TEXT_LENGTH_LIMIT: Maximum length of the text to be processed. Default is 930 characters.
 - MKL_NUM_THREADS: Number of threads to use for generating audio. Default number of threads: number of CPU cores.
+
+# Documentation
+You can view the automatically generated documentation based on OpenAPI at:
+
+| Provider | Url |
+|--------|--------|
+| [ReDoc](https://redocly.com/redoc) | https://localhost:8000/schema |
+| [Swagger UI](https://swagger.io) | https://localhost:8000/schema/swagger |
+| [Stoplight Elements](https://stoplight-site.webflow.io/open-source/elements) | https://localhost:8000/schema/elements |
+| [RepiDoc](https://rapidocweb.com) | https://localhost:8000/schema/repidoc |
+| OpenAPI schema yaml | https://localhost:8000/schema/openapi.yaml |
+| OpenAPI schema json | https://localhost:8000/schema/openapi.json |
+
+# Endpoints
+
+- `GET` `/generate` - Generate audio in wav format from text
+- `GET` `/speakers` - Get list of speakers
+
+# Considerations for the future
+This repository is dedicated to twir.app and is designed to meet its requirements.
+
+TwirApp needs to generate audio using the CPU. If support for other devices such as cuda or mps is needed, please [open an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20for%20%60cuba%60%20and%20%60mps%60%20devices).
+
+As of now, there are no immediate plans to update the project to Python 3.12 or higher. However, feel free to [create an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20python%203.12%20and%20higher), and I will reconsider this decision.

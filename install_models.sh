@@ -30,6 +30,12 @@ verify_hash() {
   else
     return 1
   fi
+
+  if [ "$currentHash" == "$expectedHash" ]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 download_model() {

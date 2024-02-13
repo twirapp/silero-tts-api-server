@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - add-dockerhub-description
     paths:
       - docker/README.md
       - .github/workflows/dockerhub-description.yml

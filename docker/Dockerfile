@@ -26,4 +26,4 @@ COPY --from=models-installer /app/models /app/models
 COPY --from=pip-installer /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["litestar", "--app", "server:app", "run", "--host", "0.0.0.0", "--port", "8000"]

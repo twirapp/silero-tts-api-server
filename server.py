@@ -1,51 +1,70 @@
-from typing import Annotated
 from os import environ
+from typing import Annotated
 
-from fastapi import FastAPI, Response, HTTPException, status
+from dotenv import load_dotenv
+from litestar import Litestar, get, Response
+from litestar.openapi import OpenAPIConfig
+from litestar.config.response_cache import CACHE_FOREVER
+from litestar.params import Parameter
 
 from tts import tts
-from openapi_examples import TextExamples, SpeakerExamples, SampleRateExamples
-from openapi_responses import GENERATE_RESPONSES
-from exceptions import NotFoundModelException, NotCorrectTextException, TextTooLongException
-
-app = FastAPI()
-
-MAX_TEXT_LENGTH = 930
-text_length_limit = min(int(environ.get("TEXT_LENGTH_LIMIT", MAX_TEXT_LENGTH)), MAX_TEXT_LENGTH) 
-class TextTooLongHTTPException(HTTPException):
-    def __init__(self, text: str):
-        super().__init__(
-            status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail=f"Text too long. Length is {len(text)}. Max length is {text_length_limit}.",
-        )
+from openapi_examples import *
+from http_exceptions import *
+from exceptions import *
 
 
-@app.get("/generate", responses=GENERATE_RESPONSES)
+load_dotenv()
+
+SILERO_MAX_TEXT_LENGTH = 930
+text_length_limit = min(
+    int(environ.get("TEXT_LENGTH_LIMIT", SILERO_MAX_TEXT_LENGTH)),
+    SILERO_MAX_TEXT_LENGTH,
+)
+
+
+@get(
+    "/generate",
+    summary="Generate WAV audio from text",
+    media_type="audio/wav",
+    sync_to_thread=True,
+    raises=genetate_exceptions,
+)
 def generate(
-    text: Annotated[str, TextExamples],
-    speaker: Annotated[str, SpeakerExamples],
-    sample_rate: Annotated[int, SampleRateExamples] = 48_000,
-):
-    if sample_rate not in (8_000, 24_000, 48_000):
-        raise HTTPException(
-            status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid sample rate: {sample_rate}. Use 8 000, 24 000 or 48 000",
-        )
+    text: Annotated[str, Parameter(examples=text_examples)],
+    speaker: Annotated[str, Parameter(examples=speaker_examples)],
+    sample_rate: Annotated[
+        int, Parameter(examples=sample_rate_examples, default=48_000)
+    ],
+) -> Response:
     if len(text) > text_length_limit:
-        raise TextTooLongHTTPException(text)
+        raise TextTooLongHTTPException(
+            {"text": text, "length": len(text), "max_length": text_length_limit}
+        )
 
     try:
         audio = tts.generate(text, speaker, sample_rate)
-    except NotFoundModelException as error:
-        return HTTPException(status.HTTP_404_NOT_FOUND, detail=str(error))
-    except NotCorrectTextException as error:
-        return HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(error))
-    except TextTooLongException as error:
-        return TextTooLongHTTPException(text)
+    except NotFoundModelException:
+        raise NotFoundSpeakerHTTPException({"speaker": speaker})
+    except NotCorrectTextException:
+        raise NotCorrectTextHTTPException({"text": text})
+    except TextTooLongException:
+        raise TextTooLongHTTPException(
+            {"text": text, "length": len(text), "max_length": text_length_limit}
+        )
+    except InvalidSampleRateException:
+        raise InvalidSampleRateHTTPException(
+            {"sample_rate": sample_rate, "valid_sample_rates": tts.VALID_SAMPLE_RATES}
+        )
     else:
         return Response(audio, media_type="audio/wav")
 
 
-@app.get("/speakers")
-def speakers():
+@get("/speakers", summary="List available speakers", cache=CACHE_FOREVER)
+async def speakers() -> dict[str, list[str]]:
     return tts.speakers
+
+
+app = Litestar(
+    [generate, speakers],
+    openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0"),
+)

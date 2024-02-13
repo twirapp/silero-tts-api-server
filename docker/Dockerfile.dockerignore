@@ -1,6 +1,5 @@
 .*
 docker/
-models/
 
 __pycache__
 venv

@@ -8,6 +8,7 @@ RUN pip3 install  -r requirements.txt --user --no-cache-dir --no-warn-script-loc
 FROM base as models-installer
 WORKDIR /app
 RUN apt-get update && apt-get install -y curl
+COPY models models
 COPY install_models.sh install_models.sh
 RUN chmod -x install_models.sh && bash ./install_models.sh >&2
 

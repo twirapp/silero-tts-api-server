@@ -5,7 +5,7 @@ on:
       - main
       - add-dockerhub-description
     paths:
-      - ./docker/README.md
+      - docker/README.md
       - .github/workflows/docker-description.yml
 jobs:
   docker-description:
@@ -20,5 +20,5 @@ jobs:
         password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
         repository: twirapp/silero-tts-api-server
         short-description: ${{ github.event.repository.description }}
-        readme-filepath: ./docker/README.md
+        readme-filepath: docker/README.md
         enable-url-completion: true

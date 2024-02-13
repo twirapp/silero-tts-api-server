@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 from pathlib import Path
+from io import BytesIO
 
 import torch
 from torch.package import PackageImporter
 
-from io import BytesIO
-from exceptions import NotFoundModelException, NotCorrectTextException, TextTooLongException
+from exceptions import *
 
 if TYPE_CHECKING:
     from .typing.package import TTSModelMultiAcc_v3
@@ -21,6 +21,8 @@ device = torch.device("cpu")
 
 
 class TTS:
+    VALID_SAMPLE_RATES = (8000, 24000, 48000)
+
     def __init__(self):
         self.models: dict[str, "TTSModelMultiAcc_v3"] = {}
         self.speakers: dict[str, list[str]] = {}
@@ -33,6 +35,8 @@ class TTS:
         model = self.model_by_speaker.get(speaker)
         if model is None:
             raise NotFoundModelException(speaker)
+        if not sample_rate in self.VALID_SAMPLE_RATES:
+            raise InvalidSampleRateException(sample_rate)
 
         return self._generate_audio(model, text, speaker, sample_rate)
 

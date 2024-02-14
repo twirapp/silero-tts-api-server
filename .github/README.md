@@ -1,7 +1,7 @@
 <!-- Created in https://leviarista.github.io/github-profile-header-generator/ -->
 ![Header](./header.png)
 
-## Languages supported
+# Languages supported
 
 > [!NOTE]
 > All models are from the repository: [snakers4/silero-models](https://github.com/snakers4/silero-models)
@@ -46,10 +46,10 @@ All languages support sample rate: 8 000, 24 000, 48 000
 
 # Run API server
 ```bash
-python3 main.py
+litestar run
 ```
 > [!NOTE]
->  The default will be [localhost:8000](http://localhost:8000/docs). All endpoints can be viewed and tested at [localhost:8000/docs](http://localhost:8000/docs)
+>  The default will be [localhost:8000](http://localhost:8000/)
 
 # Run API server via docker
 ```bash
@@ -61,7 +61,7 @@ docker run --rm -p 8000:8000 twirapp/silero-tts-api-server
 
 Build the API server image:
 ```bash
-docker build --rm -f docker/Dockerfile -t silero-tts-api-server .
+docker build -f docker/Dockerfile -t silero-tts-api-server .
 ```
 
 Run the API server container:
@@ -75,6 +75,28 @@ docker-compose -f docker/compose.yml up
 ```
 
 </details>
+
+# Documentation
+You can view the automatically generated documentation based on OpenAPI at:
+
+| Provider | Url |
+|--------|--------|
+| [ReDoc](https://redocly.com/redoc) | https://localhost:8000/schema |
+| [Swagger UI](https://swagger.io) | https://localhost:8000/schema/swagger |
+| [Stoplight Elements](https://stoplight-site.webflow.io/open-source/elements) | https://localhost:8000/schema/elements |
+| [RepiDoc](https://rapidocweb.com) | https://localhost:8000/schema/repidoc |
+| OpenAPI schema yaml | https://localhost:8000/schema/openapi.yaml |
+| OpenAPI schema json | https://localhost:8000/schema/openapi.json |
+
+# Endpoints
+
+- `GET` `/generate` - Generate audio in wav format from text
+- `GET` `/speakers` - Get list of speakers
+
+# Environment variables:
+
+- `TEXT_LENGTH_LIMIT` - Maximum length of the text to be processed. Default is 930 characters.
+- `MKL_NUM_THREADS` - Number of threads to use for generating audio. Default number of threads: number of CPU cores.
 
 # Considerations for the future
 This repository is dedicated to twir.app and is designed to meet its requirements.

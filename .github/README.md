@@ -90,8 +90,13 @@ You can view the automatically generated documentation based on OpenAPI at:
 
 # Endpoints
 
-- GET /generate - Generate audio from text
-- GET /speakers - Get list of speakers
+- `GET` `/generate` - Generate audio in wav format from text
+- `GET` `/speakers` - Get list of speakers
+
+# Environment variables:
+
+- `TEXT_LENGTH_LIMIT` - Maximum length of the text to be processed. Default is 930 characters.
+- `MKL_NUM_THREADS` - Number of threads to use for generating audio. Default number of threads: number of CPU cores.
 
 # Considerations for the future
 This repository is dedicated to twir.app and is designed to meet its requirements.

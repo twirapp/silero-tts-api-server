@@ -33,9 +33,9 @@ class TTS:
 
     def generate(self, text: str, speaker: str, sample_rate: int) -> bytes:
         model = self.model_by_speaker.get(speaker)
-        if model is None:
+        if not model:
             raise NotFoundModelException(speaker)
-        if not sample_rate in self.VALID_SAMPLE_RATES:
+        if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
         return self._generate_audio(model, text, speaker, sample_rate)

@@ -1,5 +1,5 @@
 <!-- Created in https://leviarista.github.io/github-profile-header-generator/ -->
-![Header](.github/header.png)
+[![Header](.github/header.png)](https://github.com/TwirApp/silero-tts-api-server)
 
 [Github Repository](https://github.com/TwirApp/silero-tts-api-server)
 
@@ -21,16 +21,18 @@ All models are from the repository: [snakers4/silero-models](https://github.com/
 
 All languages support sample rate: 8 000, 24 000, 48 000
 
-# How to use this image
+# Launch a docker container
+
 ```bash
 docker run --rm -p 8000:8000 twirapp/silero-tts-api-server
 ```
 
-## Here is an example using docker-compose.yml:
+# Example of use via docker compose
+
 ```yml
 version: '3'
 services:
-    app:
+    silero-tts-api-server:
         image: twirapp/silero-tts-api-server
         ports:
             - "8000:8000"
@@ -39,18 +41,14 @@ services:
             - MKL_NUM_THREADS=8
 ```
 
-## Environment variables:
-
-- TEXT_LENGTH_LIMIT: Maximum length of the text to be processed. Default is 930 characters.
-- MKL_NUM_THREADS: Number of threads to use for generating audio. Default number of threads: number of CPU cores.
-
 # Documentation
+
 You can view the automatically generated documentation based on OpenAPI at:
 
 | Provider | Url |
 |--------|--------|
-| [ReDoc](https://redocly.com/redoc) | https://localhost:8000/schema |
-| [Swagger UI](https://swagger.io) | https://localhost:8000/schema/swagger |
+| [Swagger](https://swagger.io) | https://localhost:8000/schema/ |
+| [ReDoc](https://redocly.com/redoc) | https://localhost:8000/schema/redoc |
 | [Stoplight Elements](https://stoplight-site.webflow.io/open-source/elements) | https://localhost:8000/schema/elements |
 | [RepiDoc](https://rapidocweb.com) | https://localhost:8000/schema/repidoc |
 | OpenAPI schema yaml | https://localhost:8000/schema/openapi.yaml |
@@ -58,12 +56,16 @@ You can view the automatically generated documentation based on OpenAPI at:
 
 # Endpoints
 
-- `GET` `/generate` - Generate audio in wav format from text
+- `GET` `/generate` - Generate audio in wav format from text. Parameters: `text` `speaker` `sample_rate`
 - `GET` `/speakers` - Get list of speakers
 
+# Environment variables
+
+- `TEXT_LENGTH_LIMIT` - Maximum length of the text to be processed. Default is 930 characters.
+- `MKL_NUM_THREADS` - Number of threads to use for generating audio. Default number of threads: number of CPU cores.
+
 # Considerations for the future
+
 This repository is dedicated to twir.app and is designed to meet its requirements.
 
 TwirApp needs to generate audio using the CPU. If support for other devices such as cuda or mps is needed, please [open an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20for%20%60cuba%60%20and%20%60mps%60%20devices).
-
-As of now, there are no immediate plans to update the project to Python 3.12 or higher. However, feel free to [create an issue](https://github.com/twirapp/silero-tts-api-server/issues/new?title=Support%20python%203.12%20and%20higher), and I will reconsider this decision.

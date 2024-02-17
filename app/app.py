@@ -7,10 +7,10 @@ from litestar.openapi import OpenAPIConfig
 from litestar.config.response_cache import CACHE_FOREVER
 from litestar.params import Parameter
 
-from tts import tts
-from openapi_examples import *
-from http_exceptions import *
-from exceptions import *
+from tts.tts import tts
+from tts.exceptions import *
+from app.openapi_examples import *
+from app.http_exceptions import *
 
 
 load_dotenv()

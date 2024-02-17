@@ -5,7 +5,7 @@ from io import BytesIO
 import torch
 from torch.package import PackageImporter
 
-from exceptions import *
+from tts.exceptions import *
 
 if TYPE_CHECKING:
     from .typing.package import TTSModelMultiAcc_v3

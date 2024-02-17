@@ -1,0 +1,38 @@
+[project]
+name = "silero-tts-api-server"
+version = "1.0.0"
+description = "This is a simple server that uses Silero models to convert text to audio files over HTTP"
+authors = [
+    { name = "MrPandir", email = "MrPandir@users.noreply.github.com" }
+]
+dependencies = [
+    "uvicorn>=0.27.1",
+    "litestar>=2.6.1",
+    "torch>=2.2.0",
+    "numpy>=1.26.4",
+    "python-dotenv>=1.0.1",
+]
+requires-python = ">=3.9"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+excluded-dependencies = [
+    "polyfactory",
+    "faker",
+    "six",
+    "filelock",
+    "fsspec",
+    "jinja2",
+    "markupsafe",
+    "mpmath",
+    "networkx",
+    "sympy",
+]
+
+[[tool.rye.sources]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+
+[tool.hatch.metadata]
+allow-direct-references = true

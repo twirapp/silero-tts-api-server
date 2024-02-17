@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**'
+      - '!**/README.md'
+      - '!.github/**'
+      - .github/workflows/docker.yml
   workflow_dispatch:
 
 jobs:

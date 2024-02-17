@@ -3,6 +3,7 @@ from typing import Annotated
 
 from dotenv import load_dotenv
 from litestar import Litestar, get, Response
+from litestar.response import Redirect
 from litestar.openapi import OpenAPIConfig
 from litestar.config.response_cache import CACHE_FOREVER
 from litestar.params import Parameter
@@ -63,8 +64,11 @@ def generate(
 async def speakers() -> dict[str, list[str]]:
     return tts.speakers
 
+@get(["/", "/docs"], include_in_schema=False)
+async def docs() -> Redirect:
+    return Redirect("/schema")
 
 app = Litestar(
-    [generate, speakers],
-    openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0"),
+    [generate, speakers, docs],
+    openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0", root_schema_site="swagger"),
 )

@@ -8,11 +8,17 @@ authors = [
 dependencies = [
     "uvicorn>=0.27.1",
     "litestar>=2.6.1",
-    "torch==2.2.0+cpu",
     "numpy>=1.26.4",
     "python-dotenv>=1.0.1",
 ]
 requires-python = ">=3.9"
+
+[project.optional-dependencies]
+torch-cpu = ["torch==2.2.0+cpu"]
+torch = ["torch==2.2.0"]
+
+[tool.setuptools]
+packages = []
 
 [tool.rye]
 managed = true
@@ -29,6 +35,7 @@ excluded-dependencies = [
     "networkx",
     "sympy",
 ]
+lock-with-sources = true
 
 [[tool.rye.sources]]
 name = "pytorch"

@@ -18,7 +18,7 @@ RUN curl -sSf https://rye-up.com/get | NO_AUTO_INSTALL=1 RYE_INSTALL_OPTION="--y
     bash -c "source $HOME/.rye/env && rye pin 3.12.2 && rye config --set-bool behavior.use-uv=false"
 ENV PATH=/root/.rye/shims:$PATH
 COPY pyproject.toml ./
-RUN --mount=type=cache,target=/root/.cache rye sync --no-dev --features torch-cpu
+RUN --mount=type=cache,target=/root/.cache rye sync --no-dev
 
 FROM base as models-installer
 RUN apt-get -y update && apt-get -y install curl

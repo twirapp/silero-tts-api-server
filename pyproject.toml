@@ -2,6 +2,7 @@
 name = "silero-tts-api-server"
 version = "1.0.0"
 description = "This is a simple server that uses Silero models to convert text to audio files over HTTP"
+license = { text = "MIT" }
 authors = [
     { name = "MrPandir", email = "MrPandir@users.noreply.github.com" }
 ]
@@ -10,12 +11,10 @@ dependencies = [
     "litestar>=2.6.1",
     "numpy>=1.26.4",
     "python-dotenv>=1.0.1",
+    "torch==2.2.0+cpu; sys_platform == 'aarch64' or sys_platform == 'x86_64'",
+    "torch==2.2.0; sys_platform != 'aarch64' and sys_platform != 'x86_64'",
 ]
 requires-python = ">=3.9"
-
-[project.optional-dependencies]
-torch-cpu = ["torch==2.2.0+cpu"]
-torch = ["torch==2.2.0"]
 
 [tool.setuptools]
 packages = []

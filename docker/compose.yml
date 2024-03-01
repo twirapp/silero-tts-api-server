@@ -6,3 +6,4 @@ services:
       dockerfile: ./docker/Dockerfile
     ports:
       - "8000:8000"
+    tty: true

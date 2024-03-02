@@ -43,10 +43,11 @@ class TTS:
     def _load_model(self, model_path: Path):
         package = PackageImporter(model_path)
         model: "TTSModelMultiAcc_v3" = package.load_pickle("tts_models", "model")
-        model.to(device)
+        if model.device != device:
+            model.to(device)
 
-        language = model_path.stem[3:]
-        self.models.update({language: model})
+        language = model_path.stem[3:]  # remove prefix "v3_" or "v4_"
+        self.models[language] = model
 
         self._load_speakers(model, language)
 
@@ -54,7 +55,7 @@ class TTS:
         if "random" in model.speakers:
             model.speakers.remove("random")
 
-        self.speakers.update({language: model.speakers})
+        self.speakers[language] = model.speakers
         for speaker in model.speakers:
             self.model_by_speaker[speaker] = model
 

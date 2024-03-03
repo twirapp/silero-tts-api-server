@@ -6,6 +6,7 @@ from litestar import Litestar, get, Response
 from litestar.response import Redirect
 from litestar.openapi import OpenAPIConfig
 from litestar.config.response_cache import CACHE_FOREVER
+from litestar.config.cors import CORSConfig
 from litestar.params import Parameter
 
 from tts.tts import tts
@@ -71,4 +72,5 @@ async def docs() -> Redirect:
 app = Litestar(
     [generate, speakers, docs],
     openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0", root_schema_site="swagger"),
+    cors_config=CORSConfig(),
 )

@@ -1,5 +1,4 @@
-<!-- Created in https://leviarista.github.io/github-profile-header-generator/ -->
-![Header](./header.png)
+![Banner](./banner.png)
 
 # Languages supported
 

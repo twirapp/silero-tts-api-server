@@ -1,5 +1,4 @@
-<!-- Created in https://leviarista.github.io/github-profile-header-generator/ -->
-[![Header](.github/header.png)](https://github.com/TwirApp/silero-tts-api-server)
+[![Banner](.github/banner.png)](https://github.com/TwirApp/silero-tts-api-server)
 
 [Github Repository](https://github.com/TwirApp/silero-tts-api-server)
 

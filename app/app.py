@@ -37,6 +37,9 @@ def generate(
     sample_rate: Annotated[
         int, Parameter(examples=sample_rate_examples, default=48_000)
     ],
+    # TODO: Add default value for pitch and rate
+    pitch: Annotated[int, Parameter()],
+    rate: Annotated[int, Parameter()],
 ) -> Response:
     if len(text) > text_length_limit:
         raise TextTooLongHTTPException(
@@ -44,7 +47,7 @@ def generate(
         )
 
     try:
-        audio = tts.generate(text, speaker, sample_rate)
+        audio = tts.generate(text, speaker, sample_rate, pitch, rate)
     except NotFoundModelException:
         raise NotFoundSpeakerHTTPException({"speaker": speaker})
     except NotCorrectTextException:

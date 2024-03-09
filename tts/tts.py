@@ -31,14 +31,15 @@ class TTS:
         for model_path in Path("models").glob("*.pt"):
             self._load_model(model_path)
 
-    def generate(self, text: str, speaker: str, sample_rate: int) -> bytes:
+    # TODO: Add default value for pitch and rate
+    def generate(self, text: str, speaker: str, sample_rate: int, pitch: int, rate: int) -> bytes:
         model = self.model_by_speaker.get(speaker)
         if not model:
             raise NotFoundModelException(speaker)
         if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
-        return self._generate_audio(model, text, speaker, sample_rate)
+        return self._generate_audio(model, text, speaker, sample_rate, pitch, rate)
 
     def _load_model(self, model_path: Path):
         package = PackageImporter(model_path)
@@ -60,14 +61,16 @@ class TTS:
             self.model_by_speaker[speaker] = model
 
     def _generate_audio(
-        self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int
+        self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int, pitch: int, rate: int
     ) -> bytes:
         # This fixes the problem:
         # https://github.com/twirapp/silero-tts-api-server/issues/8
         text = text.replace("-", "").replace("‑", "")
 
         try:
-            audio: torch.Tensor = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
+            # NOTE: The text may contain tags, which is not entirely good
+            ssml_text = f'<speak><prosody pitch="+{pitch}%" rate="{rate}%">{text}</prosody></speak>'
+            audio: torch.Tensor = model.apply_tts(ssml_text=ssml_text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:
             raise NotCorrectTextException(text)
         except Exception as error:

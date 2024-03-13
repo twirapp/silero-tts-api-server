@@ -4,6 +4,7 @@ from io import BytesIO
 
 import torch
 from torch.package import PackageImporter
+import numpy as np
 
 from tts.exceptions import *
 
@@ -14,6 +15,8 @@ if TYPE_CHECKING:
 # fixes import package error on Mac
 # https://github.com/snakers4/silero-models/discussions/104
 torch.backends.quantized.engine = "qnnpack"
+
+MAX_INT16 = 32767
 
 print(f"Using {torch.get_num_threads()} threads. To change, set environment variable MKL_NUM_THREADS")
 
@@ -81,10 +84,14 @@ class TTS:
         with BytesIO() as buffer:
             model.write_wave(
                 buffer,
-                audio=(audio * 32767).numpy().astype("int16"),
+                audio=self._normalize_audio(audio),
                 sample_rate=sample_rate,
             )
             buffer.seek(0)
             return buffer.read()
+
+    def _normalize_audio(self, audio: torch.Tensor):
+        audio: np.ndarray = audio.numpy() * MAX_INT16
+        return audio.astype(np.int16)
 
 tts = TTS()

@@ -41,6 +41,7 @@ class TTS:
         if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
+        text = self._delete_dashes(text)
         return self._generate_audio(model, text, speaker, sample_rate)
 
     def _load_model(self, model_path: Path):
@@ -61,14 +62,15 @@ class TTS:
         self.speakers[language] = model.speakers
         for speaker in model.speakers:
             self.model_by_speaker[speaker] = model
+    
+    def _delete_dashes(self, text: str) -> str:
+        # This fixes the problem:
+        # https://github.com/twirapp/silero-tts-api-server/issues/8
+        return text.replace("-", "").replace("‑", "")
 
     def _generate_audio(
         self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int
     ) -> bytes:
-        # This fixes the problem:
-        # https://github.com/twirapp/silero-tts-api-server/issues/8
-        text = text.replace("-", "").replace("‑", "")
-
         try:
             audio: torch.Tensor = model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:

@@ -42,6 +42,11 @@ class TTS:
         if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
+        if not 0 <= pitch <= 100:
+            raise InvalidPitchException(pitch)
+        if not 0 <= rate <= 100:
+            raise InvalidRateException(rate)
+
         pitch = self._interpolate_pitch(pitch) 
         rate = self._interpolate_rate(rate)
 

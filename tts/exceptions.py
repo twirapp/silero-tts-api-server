@@ -17,3 +17,13 @@ class InvalidSampleRateException(Exception):
     def __init__(self, sample_rate: int) -> None:
         self.sample_rate = sample_rate
         super().__init__(f"Invalid sample rate {sample_rate}. Supported sample rates are 8 000, 24 000, and 48 000.")
+
+class InvalidPitchException(Exception):
+    def __init__(self, pitch: int) -> None:
+        self.pitch = pitch
+        super().__init__(f"Invalid pitch {pitch}. Pitch should be in range from 0 to 100.")
+
+class InvalidRateException(Exception):
+    def __init__(self, rate: int) -> None:
+        self.rate = rate
+        super().__init__(f"Invalid rate {rate}. Rate should be in range from 0 to 100.")

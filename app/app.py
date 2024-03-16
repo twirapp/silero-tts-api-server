@@ -37,9 +37,8 @@ def generate(
     sample_rate: Annotated[
         int, Parameter(examples=sample_rate_examples, default=48_000)
     ],
-    # TODO: Add default value for pitch and rate
-    pitch: Annotated[int, Parameter()],
-    rate: Annotated[int, Parameter()],
+    pitch: Annotated[int, Parameter(ge=0, le=100, default=50)],
+    rate: Annotated[int, Parameter(ge=0, le=100, default=50)],
 ) -> Response:
     if len(text) > text_length_limit:
         raise TextTooLongHTTPException(
@@ -60,6 +59,9 @@ def generate(
         raise InvalidSampleRateHTTPException(
             {"sample_rate": sample_rate, "valid_sample_rates": tts.VALID_SAMPLE_RATES}
         )
+    except (InvalidPitchException, InvalidRateException):
+        # This will never happen because litestar ensures compliance with the parameters `ge` and `le`.
+        pass
     else:
         return Response(audio, media_type="audio/wav")
 

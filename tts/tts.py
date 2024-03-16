@@ -35,7 +35,6 @@ class TTS:
         for model_path in Path("models").glob("*.pt"):
             self._load_model(model_path)
 
-    # TODO: Add default value for pitch and rate
     def generate(self, text: str, speaker: str, sample_rate: int, pitch: int, rate: int) -> bytes:
         model = self.model_by_speaker.get(speaker)
         if not model:
@@ -43,8 +42,12 @@ class TTS:
         if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
+        pitch = self._interpolate_pitch(pitch) 
+        rate = self._interpolate_rate(rate)
+
         text = self._delete_dashes(text)
         text = self._delete_html_brackets(text)
+
         tensor = self._generate_audio(model, text, speaker, sample_rate, pitch, rate)
         return self._convert_to_wav(tensor, sample_rate)
 
@@ -77,11 +80,26 @@ class TTS:
         # And also prevents raising the error of generation of audio `ValueError`, if there is html tags.
         return text.replace("<", "").replace(">", "")
 
+    def _interpolate_pitch(self, pitch: int) -> int:
+        # One interesting feature of the models is that when a pitch of -100 is input,
+        # it transforms to `1.0 + (-100 / 100) = 0`, making the sound equivalent to generating `1.0 + (0 / 100) = 1`.
+        # This makes the voice the same for 0 and 1
+        if pitch == 0:
+            return -101
+
+        SCALE_FACTOR = 2
+        OFFSET = -100
+        return pitch * SCALE_FACTOR + OFFSET
+    
+    def _interpolate_rate(self, rate: int) -> int:
+        OFFSET = 50
+        return rate + OFFSET
+
     def _generate_audio(
         self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int, pitch: int, rate: int
     ) -> torch.Tensor:
+        ssml_text = f"<speak><prosody pitch='+{pitch}%' rate='{rate}%'>{text}</prosody></speak>"
         try:
-            ssml_text = f"<speak><prosody pitch='+{pitch}%' rate='{rate}%'>{text}</prosody></speak>"
             return model.apply_tts(ssml_text=ssml_text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:
             raise NotCorrectTextException(text)

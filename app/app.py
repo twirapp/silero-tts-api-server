@@ -70,12 +70,16 @@ def generate(
 async def speakers() -> dict[str, list[str]]:
     return tts.speakers
 
+
 @get(["/", "/docs"], include_in_schema=False)
 async def docs() -> Redirect:
     return Redirect("/schema")
 
+
 app = Litestar(
     [generate, speakers, docs],
-    openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0", root_schema_site="swagger"),
+    openapi_config=OpenAPIConfig(
+        title="Silero TTS API", version="1.0.0", root_schema_site="swagger"
+    ),
     cors_config=CORSConfig(),
 )

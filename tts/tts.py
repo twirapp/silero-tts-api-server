@@ -60,16 +60,21 @@ class TTS:
         for speaker in model.speakers:
             self.model_by_speaker[speaker] = model
 
+    def _delete_html_brackets(self, text: str):
+        # Safeguarding against pitch and rate modifications with HTML tags in text.
+        # And also prevents raising the error of generation of audio `ValueError`, if there is html tags.
+        return text.replace("<", "").replace(">", "")
+
     def _generate_audio(
         self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int, pitch: int, rate: int
     ) -> bytes:
         # This fixes the problem:
         # https://github.com/twirapp/silero-tts-api-server/issues/8
         text = text.replace("-", "").replace("‑", "")
+        text = self._delete_html_brackets(text)
 
         try:
-            # NOTE: The text may contain tags, which is not entirely good
-            ssml_text = f'<speak><prosody pitch="+{pitch}%" rate="{rate}%">{text}</prosody></speak>'
+            ssml_text = f"<speak><prosody pitch='+{pitch}%' rate='{rate}%'>{text}</prosody></speak>"
             audio: torch.Tensor = model.apply_tts(ssml_text=ssml_text, speaker=speaker, sample_rate=sample_rate)
         except ValueError:
             raise NotCorrectTextException(text)

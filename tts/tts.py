@@ -35,15 +35,27 @@ class TTS:
         for model_path in Path("models").glob("*.pt"):
             self._load_model(model_path)
 
-    def generate(self, text: str, speaker: str, sample_rate: int) -> bytes:
+    def generate(
+        self, text: str, speaker: str, sample_rate: int, pitch: int, rate: int
+    ) -> bytes:
         model = self.model_by_speaker.get(speaker)
         if not model:
             raise NotFoundModelException(speaker)
         if sample_rate not in self.VALID_SAMPLE_RATES:
             raise InvalidSampleRateException(sample_rate)
 
+        if not 0 <= pitch <= 100:
+            raise InvalidPitchException(pitch)
+        if not 0 <= rate <= 100:
+            raise InvalidRateException(rate)
+
+        pitch = self._interpolate_pitch(pitch)
+        rate = self._interpolate_rate(rate)
+
         text = self._delete_dashes(text)
-        tensor = self._generate_audio(model, text, speaker, sample_rate)
+        text = self._delete_html_brackets(text)
+
+        tensor = self._generate_audio(model, text, speaker, sample_rate, pitch, rate)
         return self._convert_to_wav(tensor, sample_rate)
 
     def _load_model(self, model_path: Path):
@@ -64,17 +76,46 @@ class TTS:
         self.speakers[language] = model.speakers
         for speaker in model.speakers:
             self.model_by_speaker[speaker] = model
-    
+
     def _delete_dashes(self, text: str) -> str:
         # This fixes the problem:
         # https://github.com/twirapp/silero-tts-api-server/issues/8
         return text.replace("-", "").replace("‑", "")
 
+    def _delete_html_brackets(self, text: str) -> str:
+        # Safeguarding against pitch and rate modifications with HTML tags in text.
+        # And also prevents raising the error of generation of audio `ValueError`, if there is html tags.
+        return text.replace("<", "").replace(">", "")
+
+    def _interpolate_pitch(self, pitch: int) -> int:
+        # One interesting feature of the models is that when a pitch of -100 is input,
+        # it transforms to `1.0 + (-100 / 100) = 0`, making the sound equivalent to generating `1.0 + (0 / 100) = 1`.
+        # This makes the voice the same for 0 and 1
+        if pitch == 0:
+            return -101
+
+        SCALE_FACTOR = 2
+        OFFSET = -100
+        return pitch * SCALE_FACTOR + OFFSET
+
+    def _interpolate_rate(self, rate: int) -> int:
+        OFFSET = 50
+        return rate + OFFSET
+
     def _generate_audio(
-        self, model: "TTSModelMultiAcc_v3", text: str, speaker: str, sample_rate: int
+        self,
+        model: "TTSModelMultiAcc_v3",
+        text: str,
+        speaker: str,
+        sample_rate: int,
+        pitch: int,
+        rate: int,
     ) -> torch.Tensor:
+        ssml_text = f"<speak><prosody pitch='+{pitch}%' rate='{rate}%'>{text}</prosody></speak>"
         try:
-            return model.apply_tts(text=text, speaker=speaker, sample_rate=sample_rate)
+            return model.apply_tts(
+                ssml_text=ssml_text, speaker=speaker, sample_rate=sample_rate
+            )
         except ValueError:
             raise NotCorrectTextException(text)
         except Exception as error:
@@ -84,7 +125,7 @@ class TTS:
 
     def _convert_to_wav(self, tensor: torch.Tensor, sample_rate: int) -> bytes:
         audio = self._normalize_audio(tensor)
-        with BytesIO() as buffer, wave.open(buffer, 'wb') as wav:
+        with BytesIO() as buffer, wave.open(buffer, "wb") as wav:
             wav.setnchannels(1)  # mono
             wav.setsampwidth(2)  # quality is 16 bit. Do not change
             wav.setframerate(sample_rate)
@@ -96,5 +137,6 @@ class TTS:
     def _normalize_audio(self, tensor: torch.Tensor):
         audio: np.ndarray = tensor.numpy() * MAX_INT16
         return audio.astype(np.int16)
+
 
 tts = TTS()

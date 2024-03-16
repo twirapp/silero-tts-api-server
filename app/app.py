@@ -37,6 +37,8 @@ def generate(
     sample_rate: Annotated[
         int, Parameter(examples=sample_rate_examples, default=48_000)
     ],
+    pitch: Annotated[int, Parameter(ge=0, le=100, default=50)],
+    rate: Annotated[int, Parameter(ge=0, le=100, default=50)],
 ) -> Response:
     if len(text) > text_length_limit:
         raise TextTooLongHTTPException(
@@ -44,7 +46,7 @@ def generate(
         )
 
     try:
-        audio = tts.generate(text, speaker, sample_rate)
+        audio = tts.generate(text, speaker, sample_rate, pitch, rate)
     except NotFoundModelException:
         raise NotFoundSpeakerHTTPException({"speaker": speaker})
     except NotCorrectTextException:
@@ -57,6 +59,9 @@ def generate(
         raise InvalidSampleRateHTTPException(
             {"sample_rate": sample_rate, "valid_sample_rates": tts.VALID_SAMPLE_RATES}
         )
+    except (InvalidPitchException, InvalidRateException):
+        # This will never happen because litestar ensures compliance with the parameters `ge` and `le`.
+        pass
     else:
         return Response(audio, media_type="audio/wav")
 
@@ -65,12 +70,16 @@ def generate(
 async def speakers() -> dict[str, list[str]]:
     return tts.speakers
 
+
 @get(["/", "/docs"], include_in_schema=False)
 async def docs() -> Redirect:
     return Redirect("/schema")
 
+
 app = Litestar(
     [generate, speakers, docs],
-    openapi_config=OpenAPIConfig(title="Silero TTS API", version="1.0.0", root_schema_site="swagger"),
+    openapi_config=OpenAPIConfig(
+        title="Silero TTS API", version="1.0.0", root_schema_site="swagger"
+    ),
     cors_config=CORSConfig(),
 )

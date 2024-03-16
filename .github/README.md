@@ -17,8 +17,6 @@
 | Tatar | v3_tt | 1: dilyara | 
 | Mongolian | v3_xal | 2: erdni, delghir | 
 
-All languages support sample rate: 8 000, 24 000, 48 000
-
 # Installation via docker
 
 > [!IMPORTANT]
@@ -107,8 +105,11 @@ You can view the automatically generated documentation based on OpenAPI at:
 
 # Endpoints
 
-- `GET` `/generate` - Generate audio in wav format from text. Parameters: `text` `speaker` `sample_rate`
+- `GET` `/generate` - Generate audio in wav format from text. Parameters: `text` `speaker` `sample_rate`, `pitch`, `rate`
 - `GET` `/speakers` - Get list of speakers
+
+`sample_rate` can be set from 8 000, 24 000, 48 000
+`pitch` and `rate` can be set from 0 to 100
 
 # Environment variables
 

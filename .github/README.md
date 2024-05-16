@@ -69,14 +69,15 @@ docker-compose -f docker/compose.yml up
     ```
     <details>
     <summary>(not recommended) alternative install via pip</summary>
-    Create a virtual environment and activate
+    Create a virtual environment and activate:
 
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
     ```
-    Remove line 10 `-e file:.` from the `requirements.lock` file and then run the command
+    Install only the required dependencies:
+
     ```bash
-    pip3 install -r requirements.lock
+    pip3 install --no-deps -r requirements.lock
     ```
     </details>
 3. Download silero tts models

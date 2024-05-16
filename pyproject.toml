@@ -9,18 +9,17 @@ authors = [
 dependencies = [
     "uvicorn>=0.27.1",
     "litestar>=2.6.1",
-    "numpy>=1.26.4",
     "python-dotenv>=1.0.1",
+    "numpy>=1.26.3",
     "torch==2.2.0+cpu; sys_platform == 'aarch64' or sys_platform == 'x86_64'",
     "torch==2.2.0; sys_platform != 'aarch64' and sys_platform != 'x86_64'",
 ]
 requires-python = ">=3.9"
 
-[tool.setuptools]
-packages = []
-
 [tool.rye]
 managed = true
+lock-with-sources = true
+virtual = true
 dev-dependencies = []
 excluded-dependencies = [
     "polyfactory",
@@ -34,11 +33,7 @@ excluded-dependencies = [
     "networkx",
     "sympy",
 ]
-lock-with-sources = true
 
 [[tool.rye.sources]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
-
-[tool.hatch.metadata]
-allow-direct-references = true

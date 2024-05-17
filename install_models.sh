@@ -42,7 +42,7 @@ download_model() {
   local modelUrl="$1"
 
   echo "Starting download: $modelUrl"
-  if curl -fSL -O "$modelUrl" --progress-bar -A "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0"; then
+  if curl -fSL -O "$modelUrl" --progress-bar --tlsv1.3 -A "Mozilla"; then
     echo "Completed download: $(basename "$modelUrl")"
   else
     echo "Failed download: $(basename "$modelUrl")"

@@ -1,4 +1,4 @@
-FROM python:3.12.2-slim-bookworm as base
+FROM python:3.11-slim-bookworm as base
 LABEL org.opencontainers.image.authors="MrPandir <MrPandir@users.noreply.github.com>"
 LABEL org.opencontainers.image.source="https://github.com/twirapp/silero-tts-api-server"
 LABEL org.opencontainers.image.licenses="MIT"
@@ -17,7 +17,7 @@ RUN <<EOF
 
     curl -LsSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" RYE_TOOLCHAIN=/usr/local/bin/python3 bash
     ln -s /root/.rye/shims/rye /usr/local/bin/rye
-    rye pin 3.12.2
+    rye pin 3.11
     rye config --set-bool behavior.use-uv=true
 EOF
 COPY pyproject.toml .
@@ -30,12 +30,15 @@ COPY models models
 COPY install_models.sh install_models.sh
 RUN chmod -x ./install_models.sh && bash ./install_models.sh >&2
 
-
-FROM base
+# Distroless is a small image with only python, providing a non-root user
+FROM gcr.io/distroless/python3-debian12:nonroot
 WORKDIR /app
+ENV PATH=/app/.venv/bin:$PATH
+# This is necessary for Python to understand where to look for libraries.
+ENV PYTHONPATH="/app/.venv/lib/python3.11/site-packages/:$PYTHONPATH"
+USER nonroot
 COPY --from=models-installer /models models
 COPY --from=dependencies-installer /app/.venv .venv
-ENV PATH=/app/.venv/bin:$PATH
 COPY ./app app
 COPY ./tts tts
-CMD ["litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/app/.venv/bin/litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
